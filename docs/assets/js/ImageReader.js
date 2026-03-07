@@ -1,23 +1,29 @@
-// Get DOM elements
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const fileInput = document.getElementById('file-input');
 const downloadLink = document.getElementById('download-link');
 
-// Set up event listeners
 fileInput.addEventListener('change', loadFile);
 downloadLink.addEventListener('click', saveFile);
 
-// Modified loadFile function for PNG support
 function loadFile(event) {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file) {
+        console.log('No file selected');
+        return;
+    }
 
-    // Use FileReader to read as Data URL (works with PNG, JPG, etc.)
+    console.log('File selected:', file.name, 'Type:', file.type, 'Size:', file.size);
+
     const reader = new FileReader();
+
     reader.onload = function (e) {
+        console.log('FileReader loaded, creating image...');
         const img = new Image();
+
         img.onload = function () {
+            console.log('Image loaded successfully. Dimensions:', img.width, 'x', img.height);
+
             // Resize canvas to match image dimensions
             canvas.width = img.width;
             canvas.height = img.height;
@@ -25,22 +31,56 @@ function loadFile(event) {
             // Draw image to canvas
             ctx.drawImage(img, 0, 0);
 
-            // If you still need the raw pixel data for manipulation:
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            // Now you have the RGBA data in imageData.data (Uint8ClampedArray)
+            console.log('Image drawn to canvas');
+
+            // Optional: Verify by logging first few pixels
+            try {
+                const imageData = ctx.getImageData(0, 0, 1, 1);
+                console.log('First pixel RGBA:', imageData.data);
+            } catch (e) {
+                console.log('Could not read pixel data (may be CORS issue)');
+            }
         };
+
+        img.onerror = function (error) {
+            console.error('Error loading image:', error);
+        };
+
+        // Set the source AFTER defining onload handler
         img.src = e.target.result;
+        console.log('Image src set');
     };
-    reader.readAsDataURL(file); // Use readAsDataURL instead of readAsBinaryString
+
+    reader.onerror = function (error) {
+        console.error('FileReader error:', error);
+    };
+
+    // Use readAsDataURL for PNG files
+    reader.readAsDataURL(file);
+    console.log('FileReader reading as DataURL');
 }
 
-// Modified saveFile function - keep saving as PNG
 function saveFile(event) {
     event.preventDefault();
 
-    // Simply convert canvas to data URL and download
+    console.log('Saving canvas as PNG...');
+    console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
+
     canvas.toBlob(function (blob) {
+        if (!blob) {
+            console.error('Failed to create blob');
+            return;
+        }
+
+        console.log('Blob created, size:', blob.size);
+
+        // Revoke old URL to avoid memory leaks
+        if (downloadLink.href && downloadLink.href.startsWith('blob:')) {
+            URL.revokeObjectURL(downloadLink.href);
+        }
+
         downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = "image.png"; // Change extension to .png
+        downloadLink.download = "image.png";
+        console.log('Download link updated');
     }, "image/png");
 }

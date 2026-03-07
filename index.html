@@ -3,18 +3,11 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Image Reader</title> <!-- Change this title -->
+    <title>PNG Image Viewer</title>
     <style>
-        /* Feel free to add your own cosmetic styles here */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
         canvas {
             border: 1px solid black;
-            display: block;
-            margin-bottom: 10px;
+            max-width: 100%;
         }
     </style>
 </head>
@@ -23,7 +16,7 @@
     <canvas id="canvas" width="500" height="500"></canvas>
 
     <div>
-        <input type="file" id="file-input" accept=".png">
+        <input type="file" id="file-input" accept="image/png, image/jpeg">
         <a id="download-link" href="#" download="image.png">Save Image</a>
     </div>
 
