@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Image Reader</title> <!-- Change this title -->
+    <style>
+        /* Feel free to add your own cosmetic styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <div>
+        <input type="file" id="file-input" accept=".ppm">
+        <a id="download-link" href="#" download="image.ppm">Save Image</a>
+    </div>
+
+    <script src="assets/js/ImageReader.js"></script>
+</body>
+
+</html>
