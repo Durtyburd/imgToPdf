@@ -72,7 +72,9 @@ function loadFile(event) {
   console.log("FileReader reading as DataURL");
 }
 
-function saveFile() {
+function saveFile(event) {
+  event.preventDefault();
+
   console.log("Saving canvas as PNG...");
   console.log("Canvas dimensions:", canvas.width, "x", canvas.height);
 
@@ -95,6 +97,5 @@ function saveFile() {
     tempLink.href = url;
     tempLink.download = "image.png";
     tempLink.click();
-    console.log("Download link updated");
   }, "image/png");
 }
